@@ -1,0 +1,16 @@
+#yaml file for react by creating network and automatically creates image
+version: "3.8"
+services:
+  frontendservice:
+    build: .    #if not like this then first create image using docker build abc  then keep the same name by keeping image : abc
+    networks:
+      - app-network
+    ports:
+      - 5000:3000
+networks:
+  app-network:
+    external: true
+    name: star-link
+
+
+
