@@ -1,0 +1,12 @@
+---
+- name: Manage Docker Containers
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Ensure a container is running
+      community.general.docker_container: #community.general is a collection and docker_container is a module in that collection
+        name: my_container
+        image: ubuntu
+        state: started
+        restart_policy: always
