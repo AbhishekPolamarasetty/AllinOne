@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 myhosts:
   hosts:
@@ -37,3 +38,44 @@ myhosts:
 
 # [test_Server]
 # my_host2
+=======
+---
+myhosts:
+  hosts:
+    my_host1:
+      ansible_host: 3.87.145.248
+    my_host2:
+      ansible_host: 3.87.145.150        
+
+
+# ---
+# myhosts:
+#   hosts:
+#     my_host1:
+#       ansible_host: 3.87.145.248
+#       environment: dev
+#       groups: dev_server
+#     my_host2:
+#       ansible_host: 3.87.145.150
+#       environment: test
+#       groups: test_Server
+#   children:
+#     dev_server:
+#       hosts:
+#         my_host1:
+#     prod_server:
+#       hosts:
+#          my_host2:
+
+
+# .ini code
+# [myhosts]
+# my_host1 ansible_host=3.87.145.248 environment=dev
+# my_host2 ansible_host=3.87.145.150 environment=test
+
+# [dev_server]
+# my_host1
+
+# [test_Server]
+# my_host2
+>>>>>>> 5742c1ff2cf79ab3b7360ff86f6df8be7e626e5c

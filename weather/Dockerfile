@@ -16,7 +16,13 @@ WORKDIR /app
 COPY package*.json .
 RUN npm install
 Copy . .
+<<<<<<< HEAD
 EXPOSE 8080
 CMD ["npm","start"]  
 # if npm start is present in package.json else below 
 CMD ["node","app.js"]
+=======
+RUn npm run build
+EXPOSE 3000
+CMD ["npm","start"]
+>>>>>>> 5742c1ff2cf79ab3b7360ff86f6df8be7e626e5c

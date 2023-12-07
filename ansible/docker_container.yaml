@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 - name: Manage Docker Containers
   hosts: all
@@ -12,3 +13,17 @@
         ports:
           - "8080:80"
           - "5000:80"
+=======
+---
+- name: Manage Docker Containers
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Ensure a container is running
+      community.general.docker_container: #community.general is a collection and docker_container is a module in that collection
+        name: my_container
+        image: ubuntu
+        state: started
+        restart_policy: always
+>>>>>>> 5742c1ff2cf79ab3b7360ff86f6df8be7e626e5c

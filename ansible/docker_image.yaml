@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 - name: Manage Docker Images
   hosts: all
@@ -13,4 +14,21 @@
       community.general.docker_image:
         name: httpd
         source: pull
+=======
+---
+- name: Manage Docker Images
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Pull a Docker image
+      community.general.docker_image:
+        name: nginx
+        source: pull
+      when: inventory_hostname == "my_host1"
+    - name: other image
+      community.general.docker_image:
+        name: httpd
+        source: pull
+>>>>>>> 5742c1ff2cf79ab3b7360ff86f6df8be7e626e5c
       when: inventory_hostname == "my_host2"
