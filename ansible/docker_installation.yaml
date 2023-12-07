@@ -1,0 +1,17 @@
+---
+- name: Install Docker via apt-get
+  hosts: all
+  become: true  # To escalate privileges
+
+  tasks:
+    - name: Install Docker using apt-get
+      apt:
+        name: docker.io
+        state: present  # installing 
+          # state: absent --> uninstalling
+
+
+
+
+
+
