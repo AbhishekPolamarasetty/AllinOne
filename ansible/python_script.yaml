@@ -1,0 +1,72 @@
+---
+- name: python
+  hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: copy python file
+      copy:
+        src: python.py
+        dest: /tmp/python.py
+    - name: run python file
+      command: python3 /tmp/python.py
+
+
+---
+- name: python
+  hosts: webserver
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: copy python file
+      copy:
+        src: python.py
+        dest: /tmp/python.py
+    - name: Set executable permissions on the Python script
+      become: yes
+      file:
+        path: /tmp/python.py
+        mode: u+x,o+x,g+x
+
+
+    - name: run python file and display output on hosts
+      command: python3 /tmp/python.py
+
+
+
+- name: Copy local python script copy to remote
+  ansible.builtin.copy:
+    src: ../../lib/example.py
+    dest: /home/user/projects/example.py
+
+  - name: Execute Python Script using the command module
+    ansible.builtin.command:
+      cmd: python3 /home/user/projects/example.py
+    register: result
+
+  - debug:
+      msg: "{{ result }}"
+
+
+
+
+
+      ---
+- name: python
+  hosts: webserver
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Copy local python script copy to remote
+    ansible.builtin.copy:
+      src: ../../lib/example.py
+      dest: /home/user/projects/example.py
+
+    - name: Execute Python Script using the command module
+    ansible.builtin.command:
+      cmd: python3 /home/user/projects/example.py
+    register: result
+
+    - debug:
+      msg: "{{ result }}"
+      

@@ -522,6 +522,47 @@ vim playbook.yml
 ansible roles - efficient way of writing playbooks that will improve efficiency of writing complex playbooks
 ansible-galaxy role init kubernetes --> a kubernetes folder is created and inside that there many folders like templates,files,tasks,handlers,tests,vars,meta
 
+ansible-galaxy init /etc/ansible/roles/name(custom) --offline
+
+tree structure 
+roles-example/
+├── defaults
+│   └── main.yml
+├── files
+├── handlers
+│   └── main.yml
+├── meta
+│   └── main.yml
+├── README.md
+├── tasks
+│   └── main.yml
+├── templates
+├── tests
+│   ├── inventory
+│   └── test.yml
+└── vars
+    └── main.yml
+
+
+Defaults - The defaults directory is for defining the variable defaults. The variables in default have the lowest priority thus becoming easy to override. If definition of a variable is nowhere else, the variable in defaults/main.yml will be used.
+
+files - This directory contains static files that can be copied to the target machines during playbook execution. For example, configuration files, binaries, or any other files needed by the role.
+
+bar.txt       #  <-- files for use with the copy resource
+foo.sh        #  <-- script files for use with the script resource
+
+Handlers -  Handlers are tasks triggered by other tasks. They are usually used to restart services or perform other actions when changes occur. This file contains the definitions for these handlers.
+
+meta - We use the meta directory to store authorship information which is useful if we choose to publish our role on galaxy.ansible.com. The metadata of an Ansible role consists of author, supported platforms, and dependencies.
+
+tasks - This is the main file containing the tasks to be executed by the role. It can include other task files or call other roles.(the main list of tasks that the role executes.)
+
+templates - We use the template directory to also add files to our machine(similar to files directory). Only difference between template and files directories is that the template directory supports alteration (modification). Jinja2 language to used to create these alteration. Most software configuration files become templates.  templates end in .j2
+
+tests - We can use the tests directory if we have built and automated testing process around our role. This directory contains a sample inventory and a test.yml file.
+
+vars - This is where we create variable files that define necessary variables for our role. The variables defined in this directory are meant for role internal use only. Also, it is a good idea to namespace our role variable names, to prevent potential naming conflicts with variables outside of our role. (highest priority than defaults)
+
 
 
 >>>>>>> 5742c1ff2cf79ab3b7360ff86f6df8be7e626e5c
