@@ -1,0 +1,68 @@
+why not integer why quotes in version of docker-compose.yaml file??
+When you specify the version as an unquoted number (e.g., version: 3.8), some YAML parsers might interpret it as a floating-point number instead of a string. This could lead to unexpected behavior or errors if the parser attempts to process it as a numeric value rather than a string identifier.
+
+Docker Compose uses the version number as a string identifier to determine which syntax and features are supported in the compose file. By explicitly representing it as a string with quotes ("3.8"), you ensure that it's consistently interpreted as a string value across different YAML parsers or systems, eliminating potential conflicts or misinterpretations.
+
+. meaning current folder
+
+by default mongodb stores the data in /data/db
+/data/db is outside the container and this is mapped to volume named abhi
+we can order services (i.e, frontend --> backend --> database or database --> frontend --> backend)
+
+docker-compose build --help
+  --no-cache (donot use cache while building the image)
+  --pull (always attempts to pull newer versions of the image)
+
+docker-compose build 
+
+(build images vidly_frontend & vidly_backend)
+vidly is nothing but working directory
+
+all the images are created an hour ago as all the images are created from the cached
+
+docker-compose build --no-cache 
+(images are created less than an minute ago as all the images are created newly and not from the cache)
+
+docker-compose up (to start the application)
+
+if the images are ready docker-compose will run the images inside the container else it builds the images automatically 
+
+docker-compose up --help
+    --build (no need to explicitly build the images)
+docker-compose up --build
+   -d (for detached mode for running container background)
+docker-compose up -d
+
+docker-compose ps 
+    we can see all the running containers of the specific application
+    name --> command ---> state --> port
+    vidly_frontend_1  (1 represents same image is used for creating multiple containers used for high availability and scalability)
+
+docker ps 
+    we can see all the running containers across all applications
+
+docker-compose down (this will stop and remove the container but the images are present)
+
+by default docker-compose creates a default network like vidly_default
+driver is bridge for linux and nat for windows
+ 
+docker exec -it <container-id> bash
+throws error permission denied not root user
+
+docker exec -it -u root <container-id> bash
+ping api 
+(now it works doesn't throw any error)
+
+docker comes with an embedded DNS server that contains the name and ip address of these containers.
+inside the each cotainer we have a component called DNS resolver
+this DNS resolver talks with the DNS server to find the ip address of the target container
+
+
+
+
+
+
+
+
+
+

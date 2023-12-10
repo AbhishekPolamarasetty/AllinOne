@@ -1,0 +1,31 @@
+data.yaml or data.yml  (yet another markup language)
+ --- (indicate beginning pf the code)
+
+ 
+name: the ultimate docker course
+price: 149
+is_published: true,
+tags: 
+  - software 
+  - devops
+author:
+  first_name: mosh
+  last_name: hamedani
+    
+
+
+
+--> no curly braces
+-->  no need to use quotes
+--> no need to use commas
+--> list or array are represented in -
+
+
+Parsing yaml files are slower than json files because the parser dosnot know the string or number
+so it has to treat everything as a string and try to evaluate it
+    yaml used for configuration files
+
+in json files the strings are represented in quotes so the parser can understand strings and numbers
+     json used for exchanging data between multiple computers like a client and a server
+
+In this article, parsing is defined as the processing of a piece of Python program and converting these codes into machine language. In general, we can say parse is a command for dividing the given program code into a small pieces of code for analyzing the correct syntax.
