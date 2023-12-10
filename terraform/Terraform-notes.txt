@@ -1,0 +1,336 @@
+https://github.com/iam-veeramalla/terraform-zero-to-hero/blob/main/Day-2/01-providers.md
+
+
+HashiCorp Terraform is an infrastructure as code tool that lets you define both cloud and on-prem resources in human-readable configuration files that you can version, reuse, and share.
+Terraform can manage low-level components like compute, storage, and networking resources, as well as high-level components like DNS entries and SaaS features.
+
+terraform init
+terraform plan
+terraform apply
+terraform destroy 
+terraform destroy -target=<resource.resource_name>
+
+-auto-approve ( Enables automatic approval for apply and destroy commands, skipping the confirmation prompt.)
+
+workflow - 
+write - Define infrastructure in configuration files
+plan - review the changes terraform will make to your infrastructure 
+apply - terraform provisions your infrastructure and updates the state file
+
+Day-1
+provides dev container environment
+git hub ---> fork --> codespace --> >add dev container configuration file--> modify active configuration --> terraform 
+--> same way for aws cli installation 
+--> > rebuild --> rebuild containeers
+60hrs per month 2cpus and 4gb ram
+terraform --version
+aws --version
+Address resolution protocol
+
+Day-2 
+provider - it is a plugin that helps terraform for understand where it has to create infrastructure
+   - official --aws,gcp,azure,kubernetes (developed and maintained by hashicorp)
+   - partner  -- alibaba (developed and maintained by third-party companies)
+   - community providers -- any user
+multi-region
+-- 
+provider "aws" {
+      alias = "us-east-1"   (alias value can be anything)
+      region = "us-east-1"
+}
+provider "aws" {
+      alias = "us-west-2"
+      region = "us-west-2"
+}
+resource "aws_instance" "example" {
+  ami = "2yhieqw"
+  instance_type = "t2.micro"
+  provider = "aws.us-east-1"(provider_name.alias_name)
+}
+resource "aws_instance" "example2" {
+  ami = "2yhieqw"
+  instance_type = "t2.micro"
+  provider = "aws.us-west-2"(provider_name.alias_name)
+}
+
+multi-cloud 
+-- 
+provider "aws" {
+      region = "us-east-1"
+}
+provider "azurerm" {
+   subscription_id = ""
+   client_id = "" (similar to access key)
+   client_secret = " " (similar to secret key)
+   tenant_id = " " (similar to ami id)
+}
+resource "aws_instance" "example" {
+   ami = "2yhieqw"
+   instance_type = "t2.micro"
+}
+resource "azurerm_virtual_machine" "djsd" {
+     name  = ""
+     location = ""
+     size = ""
+}
+variables - input variables & output variables
+types in terraform - 
+--> primitive types - string,number & boolean
+--> collection types - list,map & set
+--> complex type - object
+   eg- 
+variable "example_object" {
+  type = object({
+    key1 = string
+    key2 = number
+  })
+  default = {
+    key1 = "value1"
+    key2 = 42
+  }
+}
+input variables -------------
+main.tf 
+variable "instance_type" {
+   description = " " (not mandatory)
+   type = string
+   default = "t2.micro"
+}
+variable "ami_id"{
+	description = " "
+	type = string
+}
+  provider "aws"{
+    region = "us-east-1"
+}
+resource "aws_instance" " example_instance" {
+   ami = var.ami_id
+   instance_type = var.instance_type
+}
+output variable --------------
+output "public_ip"{
+    description = " "
+    value = aws_instance.example_instance.public_ip  (resource.resource_name.output)
+}
+
+main.tf
+  provider.tf
+  input.tf
+  output.tf
+  terraform.tfvar
+terraaform.tfvar - you will write the actual values in terraform.tfvar
+   - it updates the input.tf file
+if we changed the name of terraform.tfvar then we need to pass that name in terraform apply 
+  example - 
+  1) dev.tfvar
+     terraform apply dev.tfvar
+  2)terraform.tfvar
+    terraform apply
+conditional expressions - ? : ( condition ? true_val : false_val )
+example ----
+variable "environment" {
+  description = "Environment type"
+  type        = string
+  default     = "development"
+}
+variable "production_subnet_cidr" {
+  description = "CIDR block for production subnet"
+  type        = string
+  default     = "10.0.1.0/24"
+}
+variable "development_subnet_cidr" {
+  description = "CIDR block for development subnet"
+  type        = string
+  default     = "10.0.2.0/24"
+}
+resource "aws_security_group" "example" {
+  name        = "example-sg"
+  description = "Example security group"
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.environment == "production" ? [var.production_subnet_cidr] : [var.development_subnet_cidr]
+  }
+}
+--> built in functions
+Day-3
+modules - similar to micro services 
+--> modularity 
+--> reusability 
+--> simplified collaboration
+--> testing and validation
+main.tf 
+--> provider
+--> resources
+terraform.tfvars
+--> values for varibales 
+--> ami_value = " "
+--> instance_type_value = "t2.micro"
+variables.tf 
+--> all the variables
+outputs.tf
+--> to see the output
+-->In the same terraform project create a folder modules/ec2_instance
+-->add all the above .tf files to it
+-->In modules folder there need not be terraform.tfvars file and the one executing the modules they get the tfvars.
+outside the modules/ec2_insatance folder
+--> main.tf
+     --> provider "aws" {
+            region = "us-east-1"
+         }
+         module "ec2_instance" {
+           source = "./modules/ec2_instance" (the path where modules are present, it can be git repo as well)
+           ami_value = ""
+           instance_type_value = " "
+         }
+
+terraform registry --> bunch of modules are present
+ 
+Day-4
+Statefile
+remote backend
+lock  (when two different devops engineers change the terraform script at a time there will be a confusion to avoid this locking is used dynamodb is the example)
+when terraform apply then statefiles are created and these need to be stored in remote backend, 
+by using remote backend the the statefiles are updated continuously when a devops engineer runs the terraform apply command
+ 
+Day-5
+Provisioner - Execute  + implementation  during the creation
+these can be run during destruction but by default these run in creation
+ 
+remote-exec  - at the time of creating ec2 instance and can run all the commands
+local exec   - to copy all the output to a file
+file provisioner - to copy the files
+ 
+main.tf
+# Define the AWS provider configuration.
+provider "aws" {
+  region = "us-east-1"  # Replace with your desired AWS region.
+}
+ 
+variable "cidr" {
+  default = "10.0.0.0/16"
+}
+ 
+resource "aws_key_pair" "example" {
+  key_name   = "terraform-demo-abhi"  # Replace with your desired key name
+  public_key = file("~/.ssh/id_rsa.pub")  # Replace with the path to your public key file
+}
+ 
+resource "aws_vpc" "myvpc" {
+  cidr_block = var.cidr
+}
+ 
+resource "aws_subnet" "sub1" {
+  vpc_id                  = aws_vpc.myvpc.id
+  cidr_block              = "10.0.0.0/24"
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = true
+}
+ 
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.myvpc.id
+}
+ 
+resource "aws_route_table" "RT" {
+  vpc_id = aws_vpc.myvpc.id
+ 
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+}
+ 
+resource "aws_route_table_association" "rta1" {
+  subnet_id      = aws_subnet.sub1.id
+  route_table_id = aws_route_table.RT.id
+}
+ 
+resource "aws_security_group" "webSg" {
+  name   = "web"
+  vpc_id = aws_vpc.myvpc.id
+ 
+  ingress {
+    description = "HTTP from VPC"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+ 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+ 
+  tags = {
+    Name = "Web-sg"
+  }
+}
+ 
+resource "aws_instance" "server" {
+  ami                    = "ami-0261755bbcb8c4a84"
+  instance_type          = "t2.micro"
+  key_name      = aws_key_pair.example.key_name
+  vpc_security_group_ids = [aws_security_group.webSg.id]
+  subnet_id              = aws_subnet.sub1.id
+ 
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"  # Replace with the appropriate username for your EC2 instance
+    private_key = file("~/.ssh/id_rsa")  # Replace with the path to your private key
+    host        = self.public_ip
+  }
+ 
+  # File provisioner to copy a file from local to the remote EC2 instance
+  provisioner "file" {
+    source      = "app.py"  # Replace with the path to your local file
+    destination = "/home/ubuntu/app.py"  # Replace with the path on the remote instance
+  }
+ 
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Hello from the remote instance'",
+      "sudo apt update -y",  # Update package lists (for ubuntu)
+      "sudo apt-get install -y python3-pip",  # Example package installation
+      "cd /home/ubuntu",
+      "sudo pip3 install flask",
+      "sudo python3 app.py &",
+    ]
+  }
+}
+
+
+
+Day -6
+workspace
+terraform workspace new dev            new file created (terraform.tfstate.d)
+terraform apply -var-file=state.tfvars
+terraform workspace select dev
+terraform workspace show
+terraform apply --> then a terraform.tfstate is created in dev environment not in stage or prod environment
+tree - shows all folders and files in a tree like structure
+
+for not changing everytime the terraform.tfvars 
+--> we can create three different tfvars like dev.tfvars,stage.tfvars and prod.tfvars 
+       - terraform apply -var-file=stage.tfvars or dev.tfvars
+--> or in main.tf file in variable section we can use 
+      type= map(string)
+      default = {
+        "dev" = "t2.micro"
+        "dev" = "t3.micro"
+        "dev" = "t3.medium"
+}
+and in modules the instance_type = lookup(var.instance_type, terraform.workspace,t2.micro)
+
+lookup(name of variable, respective environment will be set by using terraform.workspace, default value)
+        
