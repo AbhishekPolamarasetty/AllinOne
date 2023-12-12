@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+selector: 
+  app: nginx # same name as in deployment file
+  type: NodePort # (default)
+  ports:
+  - port: 8082  # port on which the service will request
+    targetPort: 80 # port on which the container is running
+    nodePort: 30000 #(30000 - 32767)

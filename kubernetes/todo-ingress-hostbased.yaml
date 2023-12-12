@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: todo-ingress-hostbased
+spec:
+  rules:
+  - host: todo-ui.com
+    http:
+      paths: 
+      - pathType: Prefix  # prefix exact and implementation
+        path: / # anything after todo.com/ should match this rule
+        backend:
+          service:
+            name: todo-ui-service # should match with service.yaml file
+            port: 
+              number: 3001
+  - host: todo-api.com
+    http:
+      paths: 
+      - pathType: Prefix  # prefix exact and implementation
+        path: /  # anything after todo.com/ should match this rule
+        backend:
+          service:
+            name: todo-api-service # should match with service.yaml file
+            port: 
+              number: 8080
+

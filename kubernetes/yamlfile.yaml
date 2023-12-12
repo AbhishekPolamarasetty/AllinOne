@@ -12,12 +12,12 @@
     - name: local-cluster-02
       type: worker
       tags: ["local", "worker"]  
-  description: >   # folded block (preserve in a single line though it is return in two lines)
+  description: >   # folded block (preserve in a single line though it is written in two lines)
     This is the local cluser created on minikube.
     And the driver I uswed is Docker!
   longDescription: |    # little block (preserves same as written)
-    This is the local cluser created on minikube.
-    And the driver I uswed is Docker!
+     This is the local cluser created on minikube.
+     And the driver I uswed is Docker!
 - name: dev-cluster   # arrays (starting with "-" means it is an array )
   isActive: true
   createdAt: 2021-09-24 21:11:15
