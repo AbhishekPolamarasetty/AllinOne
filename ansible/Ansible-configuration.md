@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 instances created using terraform need to give security group rules i.e need to provide ssh security rule to connect to awscli
 sudo apt update on anisble master and host
 sudo apt install software-properties-common -y on master
@@ -10,12 +9,11 @@ on hosts
 sudo apt-get update
 sudo apt-get install python3
 
-
 master
 ssh ubuntu@<ip-address of hosts> enter yes and then permission denied
-cd .ssh  --> authorized_keys  known_hosts
+cd .ssh --> authorized_keys known_hosts
 
-known_hosts --> the ip address the slave is stored 
+known_hosts --> the ip address the slave is stored
 authorized_keys --> there need to be an encrypted code
 ssh-keygen --> ls --> id_rsa id_rsa.pub is added with the above two files
 cat id_rsa.pub --> copy the encrypted code
@@ -23,22 +21,20 @@ cat id_rsa.pub --> copy the encrypted code
 now hosts
 cd .ssh
 vi authorized_keys
-paste the id_rsa.pub key generated in master 
+paste the id_rsa.pub key generated in master
 
 on master ssh ubuntu@<ip-address of host>
-
 
 settingup ansible host and test connection
 
 master
 sudo nano /etc/ansible/hosts
-[production]  #group name
+[production] #group name
 host1 ansible_ssh_host=<ip-address>
 
-ansible -m ping all 
+ansible -m ping all
 ansible -m ping <groupname>
 ansible -m ping <hostname>
-
 
 need of installing python in ansible hosts---------
 
@@ -68,55 +64,56 @@ Regarding sudo apt-add-repository ppa:ansible/ansible ---
 The command sudo add-apt-repository ppa:ansible/ansible is used to add the Ansible PPA (Personal Package Archive) to your system's list of software repositories on Ubuntu or other Debian-based systems. This step is necessary to install Ansible on systems that might not have Ansible available in their default repositories or need a more recent version than what's provided by the default repositories.
 PPA(Personal Package Archive)
 
-to check ansible is present in default repository or not  ---
+to check ansible is present in default repository or not ---
 sudo apt update
 apt-cache policy ansible
 
 without the above steps also we can easily install ansible using
 sudo apt update
-sudo apt-get install ansible (but the latest version is not installed)  
+sudo apt-get install ansible (but the latest version is not installed)
 
 Agent-less
-Ansible is agentless, which means the nodes it manages do not require any software to be installed on them. 
+Ansible is agentless, which means the nodes it manages do not require any software to be installed on them.
 Ansible reads information about which machines you want to manage from your inventory.
 
 inventory - can be in ini or yaml format (yaml is preferred if number of managed nodes increases)
 Using an inventory file, Ansible can manage a large number of hosts with a single command.
-ansible-inventory -i inventory.ini --list  -- to verify the inventory
+ansible-inventory -i inventory.ini --list -- to verify the inventory
 ansible myhosts -m ping -i inventory.ini -- to ping to myhosts group
 
 what(db,web,leaf,spine) --> where(location->datacenter1,region_A,datacenter2) --> when(stage-> development,production,test,staging)
 Database (db) hosts: These are servers specifically dedicated to hosting databases.
 Web hosts: These servers are designed to host web applications or websites.
-Leaf and spine hosts: These might be used in a network infrastructure, with leaf switches connecting endpoints and spine switches 
+Leaf and spine hosts: These might be used in a network infrastructure, with leaf switches connecting endpoints and spine switches
 providing high-speed connectivity between leaf switches.
 hosts:
-  - name: DBHost1
-    type: db
-    location: datacenter1
-    stage: production
 
-  - name: WebHost1
-    type: web
-    location: region_A
-    stage: production
+- name: DBHost1
+  type: db
+  location: datacenter1
+  stage: production
 
-  - name: LeafHost1
-    type: leaf
-    location: datacenter2
-    stage: test
+- name: WebHost1
+  type: web
+  location: region_A
+  stage: production
 
-  - name: SpineHost1
-    type: spine
-    location: datacenter1
-    stage: staging
+- name: LeafHost1
+  type: leaf
+  location: datacenter2
+  stage: test
 
-  - name: DBHost2
-    type: db
-    location: datacenter2
-    stage: development
-Create a metagroup that organizes multiple groups in your inventory with the following syntax:
-metagroupname: #can be anyname like Network
+- name: SpineHost1
+  type: spine
+  location: datacenter1
+  stage: staging
+
+- name: DBHost2
+  type: db
+  location: datacenter2
+  stage: development
+  Create a metagroup that organizes multiple groups in your inventory with the following syntax:
+  metagroupname: #can be anyname like Network
   children:
 
 Playbook ----- (YAML file)
@@ -134,35 +131,34 @@ A list of one or more modules that defines the operations that Ansible performs.
 Module
 A unit of code or binary that Ansible runs on managed nodes. Ansible modules are grouped in collections with a Fully Qualified Collection Name (FQCN) for each module.
 
-- name: My first play  # play
+- name: My first play # play
   hosts: myhosts #group name in inventory
-  tasks:  #tasks
-   - name: Ping my hosts
-     ansible.builtin.ping:
+  tasks: #tasks
 
-   - name: Print message
-     ansible.builtin.debug:
-      msg: Hello world
- 
+  - name: Ping my hosts
+    ansible.builtin.ping:
+
+  - name: Print message
+    ansible.builtin.debug:
+    msg: Hello world
+
 ansible-playbook -i inventory.ini playbook.yaml - to run playbook
 
-sudo hostnamectl set-hostname newhostname  - for changing hostname
+sudo hostnamectl set-hostname newhostname - for changing hostname
 
-
-inventory 
+inventory
 by default ansible creates two groups all and ungrouped
-all and ungrouped or all and some other group 
+all and ungrouped or all and some other group
 every host will always belongs to atleast two groups
 Groups can have multiple parents and children, but not circular relationships.Hosts can also be in multiple groups, but there will only be one instance of a host at runtime. Ansible merges the data from multiple groups
 
 ...
-  webservers:
-    hosts:
-      www[01:50].example.com:
+webservers:
+hosts:
+www[01:50].example.com:
 output - www01.example.com
-         www02.example.com and soon till www50.example.com
+www02.example.com and soon till www50.example.com
 dynamic inventory - inventory plugins and inventory scripts
-
 
 patterns --
 When you execute Ansible through an ad hoc command or by running a playbook, you must choose which managed nodes or groups you want to execute against. Patterns let you run commands and playbooks against specific hosts and/or groups in your inventory.
@@ -170,32 +166,30 @@ ansible <pattern> -m <module_name> -a "<module options>"
 
 hosts.yml
 all:
-  hosts:
-    server1.example.com:
-      ansible_user: user1
-      environment: dev
-    server2.example.com:
-      ansible_user: user2
-      environment: prod
+hosts:
+server1.example.com:
+ansible_user: user1
+environment: dev
+server2.example.com:
+ansible_user: user2
+environment: prod
 playbook.yml
+
 - name: Example playbook with patterns
-  hosts: dev_servers  # Using a group name as a pattern
+  hosts: dev_servers # Using a group name as a pattern
 
-  tasks:
-    - name: Task 1 for dev servers
-      ansible.builtin.command: echo "This is executed on dev servers"
-ansible-playbook -i hosts.yml playbook.yml
- 
+  tasks: - name: Task 1 for dev servers
+  ansible.builtin.command: echo "This is executed on dev servers"
+  ansible-playbook -i hosts.yml playbook.yml
 
-You can change the behavior of the patterns defined in ad-hoc commands using command-line options. 
+You can change the behavior of the patterns defined in ad-hoc commands using command-line options.
 You can also limit the hosts you target on a particular run with the --limit flag.
 
 $ ansible all -m <module> -a "<module options>" --limit "host1,host2"
 
-
 ansible-doc yum -- command for documentation of each modules
 
-ansible-doc -l -- for listing al avialable modules 
+ansible-doc -l -- for listing al avialable modules
 
 ansible -i inventory.yaml all -m apt -a "update_cache=yes" -b
 
@@ -203,15 +197,11 @@ ansible -i inventory.yaml all -m apt -a "name=nginx state=present" -b
 -b for escalate privilages
 
 ansible -i inventory.yaml all -m "shell" -a "touch f1"
-ansible -i inventory.yaml all -m ping 
-
-
+ansible -i inventory.yaml all -m ping
 
 ansible-playbook -i inventory.yaml playbook.yaml --limit=my_hosts1
 state: present --> installing
 state: absent --> uninstalling
-
-
 
 ansible-galaxy collection install community.general
 
@@ -221,13 +211,12 @@ it supports both linux and windows.for linux in uses SSH protocol and for Window
 ansible uses push mechanism
 yaml for writing playbooks
 
-
 ssh <private-ipaddress>
 ansible adhoc commands (used for executing one or two tasks using ansible on master )
 anssible -i inventory all -m "shell" -a "touch devopsclass"
 adhoc vs playbooks
 
--m stands for modules 
+-m stands for modules
 -a stands for what command need to be executed
 
 ansible -i inventory webserver -m "shell" -a "df"
@@ -235,32 +224,31 @@ here webserver is the group name mentioned in inventory file
 
 vim playbook.yml
 --- (indicates this is a yaml file)
+
 - name : install and start nginx
- hosts: all (all servers in inventory files are executed)
- become: root(run ansible as a root user) or become_user is used for providing custom users
- 
- tasks:
-  - name: install nginx
-    shell: apt install nginx or
-    apt: 
-      name: nginx
-      state: present
+  hosts: all (all servers in inventory files are executed)
+  become: root(run ansible as a root user) or become_user is used for providing custom users
+
+tasks:
+
+- name: install nginx
+  shell: apt install nginx or
+  apt:
+  name: nginx
+  state: present
   -name: start nginx
-   shell: systemctl start nginx or
-   service:
-      name: nginx
-      state: started
-       
+  shell: systemctl start nginx or
+  service:
+  name: nginx
+  state: started
 
 - indicates there can be list of playbooks
---> ansible-playbook -i inventory first-playbook.yaml
---> ansible-playbook -v -i inventory first-playbook.yaml
-   -v verbose (provides entire information regarding what the ansible is doing internally)
+  --> ansible-playbook -i inventory first-playbook.yaml
+  --> ansible-playbook -v -i inventory first-playbook.yaml
+  -v verbose (provides entire information regarding what the ansible is doing internally)
 
 ansible roles - efficient way of writing playbooks that will improve efficiency of writing complex playbooks
 ansible-galaxy role init kubernetes --> a kubernetes folder is created and inside that there many folders like templates,files,tasks,handlers,tests,vars,meta
-
-
 
 =======
 instances created using terraform need to give security group rules i.e need to provide ssh security rule to connect to awscli
@@ -274,12 +262,11 @@ on hosts
 sudo apt-get update
 sudo apt-get install python3
 
-
 master
 ssh ubuntu@<ip-address of hosts> enter yes and then permission denied
-cd .ssh  --> authorized_keys  known_hosts
+cd .ssh --> authorized_keys known_hosts
 
-known_hosts --> the ip address the slave is stored 
+known_hosts --> the ip address the slave is stored
 authorized_keys --> there need to be an encrypted code
 ssh-keygen --> ls --> id_rsa id_rsa.pub is added with the above two files
 cat id_rsa.pub --> copy the encrypted code
@@ -287,22 +274,20 @@ cat id_rsa.pub --> copy the encrypted code
 now hosts
 cd .ssh
 vi authorized_keys
-paste the id_rsa.pub key generated in master 
+paste the id_rsa.pub key generated in master
 
 on master ssh ubuntu@<ip-address of host>
-
 
 settingup ansible host and test connection
 
 master
 sudo nano /etc/ansible/hosts
-[production]  #group name
+[production] #group name
 host1 ansible_ssh_host=<ip-address>
 
-ansible -m ping all 
+ansible -m ping all
 ansible -m ping <groupname>
 ansible -m ping <hostname>
-
 
 need of installing python in ansible hosts---------
 
@@ -332,55 +317,56 @@ Regarding sudo apt-add-repository ppa:ansible/ansible ---
 The command sudo add-apt-repository ppa:ansible/ansible is used to add the Ansible PPA (Personal Package Archive) to your system's list of software repositories on Ubuntu or other Debian-based systems. This step is necessary to install Ansible on systems that might not have Ansible available in their default repositories or need a more recent version than what's provided by the default repositories.
 PPA(Personal Package Archive)
 
-to check ansible is present in default repository or not  ---
+to check ansible is present in default repository or not ---
 sudo apt update
 apt-cache policy ansible
 
 without the above steps also we can easily install ansible using
 sudo apt update
-sudo apt-get install ansible (but the latest version is not installed)  
+sudo apt-get install ansible (but the latest version is not installed)
 
 Agent-less
-Ansible is agentless, which means the nodes it manages do not require any software to be installed on them. 
+Ansible is agentless, which means the nodes it manages do not require any software to be installed on them.
 Ansible reads information about which machines you want to manage from your inventory.
 
 inventory - can be in ini or yaml format (yaml is preferred if number of managed nodes increases)
 Using an inventory file, Ansible can manage a large number of hosts with a single command.
-ansible-inventory -i inventory.ini --list  -- to verify the inventory
+ansible-inventory -i inventory.ini --list -- to verify the inventory
 ansible myhosts -m ping -i inventory.ini -- to ping to myhosts group
 
 what(db,web,leaf,spine) --> where(location->datacenter1,region_A,datacenter2) --> when(stage-> development,production,test,staging)
 Database (db) hosts: These are servers specifically dedicated to hosting databases.
 Web hosts: These servers are designed to host web applications or websites.
-Leaf and spine hosts: These might be used in a network infrastructure, with leaf switches connecting endpoints and spine switches 
+Leaf and spine hosts: These might be used in a network infrastructure, with leaf switches connecting endpoints and spine switches
 providing high-speed connectivity between leaf switches.
 hosts:
-  - name: DBHost1
-    type: db
-    location: datacenter1
-    stage: production
 
-  - name: WebHost1
-    type: web
-    location: region_A
-    stage: production
+- name: DBHost1
+  type: db
+  location: datacenter1
+  stage: production
 
-  - name: LeafHost1
-    type: leaf
-    location: datacenter2
-    stage: test
+- name: WebHost1
+  type: web
+  location: region_A
+  stage: production
 
-  - name: SpineHost1
-    type: spine
-    location: datacenter1
-    stage: staging
+- name: LeafHost1
+  type: leaf
+  location: datacenter2
+  stage: test
 
-  - name: DBHost2
-    type: db
-    location: datacenter2
-    stage: development
-Create a metagroup that organizes multiple groups in your inventory with the following syntax:
-metagroupname: #can be anyname like Network
+- name: SpineHost1
+  type: spine
+  location: datacenter1
+  stage: staging
+
+- name: DBHost2
+  type: db
+  location: datacenter2
+  stage: development
+  Create a metagroup that organizes multiple groups in your inventory with the following syntax:
+  metagroupname: #can be anyname like Network
   children:
 
 Playbook ----- (YAML file)
@@ -398,35 +384,34 @@ A list of one or more modules that defines the operations that Ansible performs.
 Module
 A unit of code or binary that Ansible runs on managed nodes. Ansible modules are grouped in collections with a Fully Qualified Collection Name (FQCN) for each module.
 
-- name: My first play  # play
+- name: My first play # play
   hosts: myhosts #group name in inventory
-  tasks:  #tasks
-   - name: Ping my hosts
-     ansible.builtin.ping:
+  tasks: #tasks
 
-   - name: Print message
-     ansible.builtin.debug:
-      msg: Hello world
- 
+  - name: Ping my hosts
+    ansible.builtin.ping:
+
+  - name: Print message
+    ansible.builtin.debug:
+    msg: Hello world
+
 ansible-playbook -i inventory.ini playbook.yaml - to run playbook
 
-sudo hostnamectl set-hostname newhostname  - for changing hostname
+sudo hostnamectl set-hostname newhostname - for changing hostname
 
-
-inventory 
+inventory
 by default ansible creates two groups all and ungrouped
-all and ungrouped or all and some other group 
+all and ungrouped or all and some other group
 every host will always belongs to atleast two groups
 Groups can have multiple parents and children, but not circular relationships.Hosts can also be in multiple groups, but there will only be one instance of a host at runtime. Ansible merges the data from multiple groups
 
 ...
-  webservers:
-    hosts:
-      www[01:50].example.com:
+webservers:
+hosts:
+www[01:50].example.com:
 output - www01.example.com
-         www02.example.com and soon till www50.example.com
+www02.example.com and soon till www50.example.com
 dynamic inventory - inventory plugins and inventory scripts
-
 
 patterns --
 When you execute Ansible through an ad hoc command or by running a playbook, you must choose which managed nodes or groups you want to execute against. Patterns let you run commands and playbooks against specific hosts and/or groups in your inventory.
@@ -434,46 +419,40 @@ ansible <pattern> -m <module_name> -a "<module options>"
 
 hosts.yml
 all:
-  hosts:
-    server1.example.com:
-      ansible_user: user1
-      environment: dev
-    server2.example.com:
-      ansible_user: user2
-      environment: prod
+hosts:
+server1.example.com:
+ansible_user: user1
+environment: dev
+server2.example.com:
+ansible_user: user2
+environment: prod
 playbook.yml
+
 - name: Example playbook with patterns
-  hosts: dev_servers  # Using a group name as a pattern
+  hosts: dev_servers # Using a group name as a pattern
 
-  tasks:
-    - name: Task 1 for dev servers
-      ansible.builtin.command: echo "This is executed on dev servers"
-ansible-playbook -i hosts.yml playbook.yml
- 
+  tasks: - name: Task 1 for dev servers
+  ansible.builtin.command: echo "This is executed on dev servers"
+  ansible-playbook -i hosts.yml playbook.yml
 
-You can change the behavior of the patterns defined in ad-hoc commands using command-line options. 
+You can change the behavior of the patterns defined in ad-hoc commands using command-line options.
 You can also limit the hosts you target on a particular run with the --limit flag.
 
 $ ansible all -m <module> -a "<module options>" --limit "host1,host2"
 
-
 ansible-doc yum -- command for documentation of each modules
 
-ansible-doc -l -- for listing al avialable modules 
+ansible-doc -l -- for listing al avialable modules
 
 ansible -i inventory.yaml all -m apt -a "name=nginx state=present" -o
 -b for escalate privilages
 
 ansible -i inventory.yaml all -m "shell" -a "touch f1"
-ansible -i inventory.yaml all -m ping 
-
-
+ansible -i inventory.yaml all -m ping
 
 ansible-playbook -i inventory.yaml playbook.yaml --limit=my_hosts1
 state: present --> installing
 state: absent --> uninstalling
-
-
 
 ansible-galaxy collection install community.general
 
@@ -483,13 +462,12 @@ it supports both linux and windows.for linux in uses SSH protocol and for Window
 ansible uses push mechanism
 yaml for writing playbooks
 
-
 ssh <private-ipaddress>
 ansible adhoc commands (used for executing one or two tasks using ansible on master )
 anssible -i inventory all -m "shell" -a "touch devopsclass"
 adhoc vs playbooks
 
--m stands for modules 
+-m stands for modules
 -a stands for what command need to be executed
 
 ansible -i inventory webserver -m "shell" -a "df"
@@ -497,72 +475,69 @@ here webserver is the group name mentioned in inventory file
 
 vim playbook.yml
 --- (indicates this is a yaml file)
+
 - name : install and start nginx
- hosts: all (all servers in inventory files are executed)
- become: root(run ansible as a root user) or become_user is used for providing custom users
- 
- tasks:
-  - name: install nginx
-    shell: apt install nginx or
-    apt: 
-      name: nginx
-      state: present
+  hosts: all (all servers in inventory files are executed)
+  become: root(run ansible as a root user) or become_user is used for providing custom users
+
+tasks:
+
+- name: install nginx
+  shell: apt install nginx or
+  apt:
+  name: nginx
+  state: present
   -name: start nginx
-   shell: systemctl start nginx or
-   service:
-      name: nginx
-      state: started
-       
+  shell: systemctl start nginx or
+  service:
+  name: nginx
+  state: started
 
 - indicates there can be list of playbooks
---> ansible-playbook -i inventory first-playbook.yaml
---> ansible-playbook -v -i inventory first-playbook.yaml
-   -v verbose (provides entire information regarding what the ansible is doing internally)
+  --> ansible-playbook -i inventory first-playbook.yaml
+  --> ansible-playbook -v -i inventory first-playbook.yaml
+  -v verbose (provides entire information regarding what the ansible is doing internally)
 
 ansible roles - efficient way of writing playbooks that will improve efficiency of writing complex playbooks
 ansible-galaxy role init kubernetes --> a kubernetes folder is created and inside that there many folders like templates,files,tasks,handlers,tests,vars,meta
 
 ansible-galaxy init /etc/ansible/roles/name(custom) --offline
 
-tree structure 
+tree structure
 roles-example/
 ├── defaults
-│   └── main.yml
+│ └── main.yml
 ├── files
 ├── handlers
-│   └── main.yml
+│ └── main.yml
 ├── meta
-│   └── main.yml
+│ └── main.yml
 ├── README.md
 ├── tasks
-│   └── main.yml
+│ └── main.yml
 ├── templates
 ├── tests
-│   ├── inventory
-│   └── test.yml
+│ ├── inventory
+│ └── test.yml
 └── vars
-    └── main.yml
-
+└── main.yml
 
 Defaults - The defaults directory is for defining the variable defaults. The variables in default have the lowest priority thus becoming easy to override. If definition of a variable is nowhere else, the variable in defaults/main.yml will be used.
 
 files - This directory contains static files that can be copied to the target machines during playbook execution. For example, configuration files, binaries, or any other files needed by the role.
 
-bar.txt       #  <-- files for use with the copy resource
-foo.sh        #  <-- script files for use with the script resource
+bar.txt # <-- files for use with the copy resource
+foo.sh # <-- script files for use with the script resource
 
-Handlers -  Handlers are tasks triggered by other tasks. They are usually used to restart services or perform other actions when changes occur. This file contains the definitions for these handlers.
+Handlers - Handlers are tasks triggered by other tasks. They are usually used to restart services or perform other actions when changes occur. This file contains the definitions for these handlers.
 
 meta - We use the meta directory to store authorship information which is useful if we choose to publish our role on galaxy.ansible.com. The metadata of an Ansible role consists of author, supported platforms, and dependencies.
 
 tasks - This is the main file containing the tasks to be executed by the role. It can include other task files or call other roles.(the main list of tasks that the role executes.)
 
-templates - We use the template directory to also add files to our machine(similar to files directory). Only difference between template and files directories is that the template directory supports alteration (modification). Jinja2 language to used to create these alteration. Most software configuration files become templates.  templates end in .j2
+templates - We use the template directory to also add files to our machine(similar to files directory). Only difference between template and files directories is that the template directory supports alteration (modification). Jinja2 language to used to create these alteration. Most software configuration files become templates. templates end in .j2
 
 tests - We can use the tests directory if we have built and automated testing process around our role. This directory contains a sample inventory and a test.yml file.
 
 vars - This is where we create variable files that define necessary variables for our role. The variables defined in this directory are meant for role internal use only. Also, it is a good idea to namespace our role variable names, to prevent potential naming conflicts with variables outside of our role. (highest priority than defaults)
 
-
-
->>>>>>> 5742c1ff2cf79ab3b7360ff86f6df8be7e626e5c
