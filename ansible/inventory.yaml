@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 myhosts:
   hosts:
@@ -38,7 +37,6 @@ myhosts:
 
 # [test_Server]
 # my_host2
-=======
 ---
 myhosts:
   hosts:
@@ -78,4 +76,4 @@ myhosts:
 
 # [test_Server]
 # my_host2
->>>>>>> 5742c1ff2cf79ab3b7360ff86f6df8be7e626e5c
+
